@@ -1,7 +1,8 @@
 const express = require('express');
 const studentRouter = express.Router();
-const {testAPI,registerStudent}=require('../controllers/student.controller.js');
+const {testAPI,registerStudent,loginStudent, logoutStudent}=require('../controllers/student.controller.js');
 const {upload}=require('../middlewares/multer.middleware.js');
+const { verifyJWT } = require('../middlewares/auth.middleware.js');
 
 
 studentRouter.get('/testing',testAPI)
@@ -26,9 +27,9 @@ studentRouter.post(
 // },registerStudent);
 
   
+studentRouter.post('/login',loginStudent)
 
-
-
+studentRouter.post("/logout",verifyJWT,logoutStudent)
 
 module.exports = studentRouter;
 
