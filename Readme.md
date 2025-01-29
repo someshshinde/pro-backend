@@ -23,9 +23,9 @@
 
 add package.json to 
 "scripts": { "dev":"nodemon src/index.js" }
-<h3>[Prettier]</h3>
+<h3>Prettier</h3>
 Prettier is an opinionated code formatter
 
 <i>Development Dependency</i>[ npm install --save-dev prettier ]
 
-[Documentation]((https://prettier.io/docs/en/))
+[Documentation](https://prettier.io/docs/en/)
