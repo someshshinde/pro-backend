@@ -16,6 +16,10 @@
 
 [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 
+[Mongoose Middleware](https://mongoosejs.com/docs/middleware.html)
+
+[JWT Tokens](https://github.com/auth0/node-jsonwebtoken#readme)
+
 <h3>Package Install</h3>
 <b>Nodemon</b>
 <p>nodemon is a tool that helps develop Node.js based applications by automatically restarting the node application when file changes in the directory are detected</p>
@@ -63,6 +67,26 @@ add package.json to
  </p>
 
  [ npm i cors ]
+
+<b>bcrypt</b>
+
+<p>A library to help you hash passwords.</p>
+
+[ npm i bcrypt ]
+
+<b>jsonwebtoken</b>
+
+<p>This was developed against draft-ietf-oauth-json-web-token-08. It makes use of node-jws</p>
+
+[  npm i jsonwebtoken ]
+
+ <b>mongoose-aggregate-paginate-v2</b>
+
+ <p>mongoose-aggregate-paginate-v2 is a plugin for Mongoose that adds pagination to</p>
+
+ <p>Manage Relationship Database</p>
+
+ [  npm i mongoose-aggregate-paginate-v2 ]
 
  <h3>Error Handling</h3>
 
