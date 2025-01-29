@@ -6,14 +6,8 @@
 
 [Cloudinary File upload](https://cloudinary.com/)
 
-[Set-up GitHub ](https://github.com/) 
+[Set-up GitHub Repository ](https://github.com/) 
 
-<h5>Git Commands</h5>
+[Step-by-step Windows GitHub SSH example](https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/GitHub-SSH-Windows-Example)
 
-<p>git init</p>
-<p>git add .</p>
-<p>git commit -m "first commit"</p>
-<p>git branch -M main</p>
-<p>git remote add origin </p>
-<p>git@github.com:username/repository_name.git</p>
-<p>git push -u origin main
+
