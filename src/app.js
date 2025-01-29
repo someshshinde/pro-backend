@@ -20,4 +20,8 @@ app.use(express.static("public"))//To serve static files such as images, CSS fil
 
 app.use(cookieParser())//set up cookie-parser middleware from user browser
 
+
+const studentRouter=require('./routes/student.routes.js')
+app.use('/api/v1/students', studentRouter);
+
 module.exports={app}
