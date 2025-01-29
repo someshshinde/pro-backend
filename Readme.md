@@ -88,6 +88,18 @@ add package.json to
 
  [  npm i mongoose-aggregate-paginate-v2 ]
 
+ <b>Cloudinary</b>
+ <p>Develop, manage and deliver engaging visual experiences at global scale through AI-driven automation.</p>
+
+ [ npm i cloudinary ]
+
+ <b>multer</b>
+
+ <p>
+ Multer is a middleware function that handles multipart/form-data, which is used for uploading files. </p>
+
+[ npm i multer ]
+
  <h3>Error Handling</h3>
 
 <b>asyncHandler</b>
