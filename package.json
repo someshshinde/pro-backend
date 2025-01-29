@@ -1,0 +1,12 @@
+{
+  "name": "pro_backend_setup",
+  "version": "1.0.0",
+  "description": "setup banckend pro",
+  "license": "ISC",
+  "author": "somesh shinde",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
