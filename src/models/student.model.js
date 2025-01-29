@@ -53,16 +53,17 @@ studentSchema.pre("save", async function (next) {
 })
 
 studentSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(this.password, password);
+    return await bcrypt.compare(password, this.password);
 }
 studentSchema.methods.generateAccessToken = function () {
     return jwt.sign({
         _id: this._id,
+        email:this.email,
         username: this.username
     },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: ACCESS_TOKEN_EXPIRY
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
         }
     );
 }
@@ -73,7 +74,7 @@ studentSchema.methods.generateRefreshToken = function () {
     },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn: REFRESH_TOKEN_EXPIRY
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     );
 }

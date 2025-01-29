@@ -14,13 +14,14 @@ const testAPI = asyncHandler(async (req, res) => {
 const generateAccessAndRefreshTockens = async (studentId) => {
     try {
 
-        const student = await student.findById(studentId)
+        const student = await Student.findById(studentId)
 
-        const accessToken = await generateAccessToken(student)
-        const refreshToken = await generateRefreshToken(student)
+
+        const accessToken = await student.generateAccessToken()
+        const refreshToken = await student.generateRefreshToken()
 
         student.refreshToken = refreshToken
-        user.save({ validateBeforeSave: false })
+        await student.save({ validateBeforeSave: false })
 
         return { accessToken, refreshToken }
     } catch (error) {
@@ -76,12 +77,12 @@ const registerStudent = asyncHandler(async (req, res) => {
 const loginStudent = asyncHandler(async (req, res) => {
     //req body->data
     const { email, username, password } = req.body
-    if (!username || !email) {
-        throw new ApiError(400, "Please fill all the fields")
+    if (!username && !email) {
+        throw new ApiError(400, "username or email is required")
     }
     const student = await Student.findOne({ $or: [{ username }, { email }] })
     if (!student) {
-        throw new ApiError(404, "Invalid username or email")
+        throw new ApiError(404, "Student does not exits")
     }
     //password validation
     const isPasswordValid = await student.isPasswordCorrect(password)
@@ -92,10 +93,10 @@ const loginStudent = asyncHandler(async (req, res) => {
 
 
     //access refresh tocken
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTockens(student._id)
+    const { accessToken, refreshToken }= await generateAccessAndRefreshTockens(student._id)
 
     //send cookies
-    const loginStudent = await Student.findById(user._id).select("-password,-refreshToken")
+    const loginStudent = await Student.findById(student._id).select("-password,-refreshToken")
     //set cookies
     const options = {
         httpOnly: true,
@@ -123,7 +124,7 @@ const logoutStudent = asyncHandler(async (req, res) => {
     await Student.findByIdAndUpdate(req.student._id
         , {
             $set: {
-                refreshToken: undefined,
+                refreshToken: "",
             }
 
         },
