@@ -25,9 +25,26 @@ add package.json to
 "scripts": { "dev":"nodemon src/index.js" }
 
 <b>Prettier</b>
-<p>prettier is a code formatter that helps you write clean and consistent code</p>
+<p>Prettier is a code formatter that helps you write clean and consistent code</p>
 
 
 <i>Development Dependency</i>[ npm install --save-dev prettier ]
 
 [Documentation](https://prettier.io/docs/en/)
+
+<b>dotenv</b>
+<p>dotenv is a package that loads environment variables from a .env file into process.env</p>
+
+[ npm i dotenv ]
+
+<b>Mongoose</b>
+<p>Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. Mongoose supports Node.js </p>
+
+[ npm i mongoose ]
+
+<b>Express</b>
+<p>Fast, unopinionated, minimalist web framework for Node.js.</p>
+
+[ npm i express ]
+
+ 
