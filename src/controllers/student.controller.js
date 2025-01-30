@@ -187,79 +187,83 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const { oldPassword, newPassword,confPassword } = req.body
+    const { oldPassword, newPassword, confPassword } = req.body
 
-    if(!(newPassword===confPassword)){
+    if (!(newPassword === confPassword)) {
         throw new ApiError(400, "Password and Confirm Password does not match")
-        
+
     }
-
+   
     const student = await Student.findById(req.student?._id)
-    const isPasswordCorrect = await student.isPasswordCorrect(oldPassword)
-    if (!isPasswordCorrect) throw new ApiError(400, "Invalid Old Password")
+ 
+    const isPasswordValid = await student.isPasswordCorrect(oldPassword)
+    if (!isPasswordValid) {
+        throw new ApiError(400, "Invalid Old Password")
+    }
     student.password = newPassword
-await student.save({validateBeforeSave:false})
-return res
-.status(200)
-.json(new ApiResponse(200, {}, "Password Changed Successfully"))
-
-})
-
-const getCurrentStudent=asyncHandler(async(req,res)=>{
+    await student.save({ validateBeforeSave: false })
     return res
-    .status(200)
-    .json(200,req.student,"current student fetch sucessfully")
+        .status(200)
+        .json(new ApiResponse(200, {}, "Password Changed Successfully"))
+
 })
-const updateAccountDetails=asyncHandler(async(req,res)=>{
-    const {name} = req.body
-    if(!name)
-    {
+
+const getCurrentStudent = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .json(new ApiResponse(200, { student: req.student }, "Student Details Retrieved Successfully"))
+})
+const updateAccountDetails = asyncHandler(async (req, res) => {
+    const { name } = req.body
+    if (!name) {
         throw new ApiError(400, "Name is required")
     }
     const student = await Student.findByIdAndUpdate(req.student?._id,
         {
-            $set:{
-                name:name
+            $set: {
+                name: name
             }
-        },{
-            new:true
-        }
+        }, {
+        new: true
+    }
     ).select("-password")
 
     return res
-    .status(200)
-    .json(new ApiResponse(200, student, "Account Details Updated Successfully"))
-    
+        .status(200)
+        .json(new ApiResponse(200, student, "Account Details Updated Successfully"))
+
 })
 
-const updatStudentAvatar=asyncHandler(async(req,res)=>{
-    const avatarLocalPath=req.file?.path
-    if(!avatarLocalPath)
-    {
+const updatStudentAvatar = asyncHandler(async (req, res) => {
+
+
+   
+    const avatarLocalPath =  req.files?.avatar[0]?.path
+    if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar File is required")
     }
-    const avatar=await uploadOnCloudinary(avatarLocalPath)
-    if(!avatar.url)
-    {
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+    if (!avatar.url) {
         throw new ApiError(400, "Avatar Upload Failed")
     }
     const student = await Student.findByIdAndUpdate(req.student?._id,
         {
-            $set:{
-                avatar:avatar.url
+            $set: {
+                avatar: avatar.url
             }
-        },{
-            new:true
-        }
+        }, {
+        new: true
+    }
     ).select("-password")
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, student, "Avatar Updated Successfully")
-    )
+        .status(200)
+        .json(
+            new ApiResponse(200, student, "Avatar Updated Successfully")
+        )
 })
 
-module.exports = { testAPI, registerStudent, loginStudent, logoutStudent, refreshAccessToken,
-    changeCurrentPassword,getCurrentStudent,updateAccountDetails,
+module.exports = {
+    testAPI, registerStudent, loginStudent, logoutStudent, refreshAccessToken,
+    changeCurrentPassword, getCurrentStudent, updateAccountDetails,
     updatStudentAvatar
 }
