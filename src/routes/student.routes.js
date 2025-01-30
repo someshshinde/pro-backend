@@ -1,6 +1,8 @@
 const express = require('express');
 const studentRouter = express.Router();
-const {testAPI,registerStudent,loginStudent, logoutStudent,refreshAccessToken,changeCurrentPassword,getCurrentStudent,updateAccountDetails,updatStudentAvatar}=require('../controllers/student.controller.js');
+const {testAPI,registerStudent,loginStudent, logoutStudent,refreshAccessToken,changeCurrentPassword,getCurrentStudent,updateAccountDetails,updatStudentAvatar,
+  getStudentExamDetails
+}=require('../controllers/student.controller.js');
 const {upload}=require('../middlewares/multer.middleware.js');
 const { verifyJWT } = require('../middlewares/auth.middleware.js');
 
@@ -40,5 +42,7 @@ studentRouter.get('/getcurrent-student',verifyJWT,getCurrentStudent)
 studentRouter.post('/update-account',verifyJWT,updateAccountDetails)
 
 studentRouter.post('/update-avatar',upload.fields([{ name: "avatar", maxCount: 1 }]),verifyJWT,updatStudentAvatar)
+
+studentRouter.get('/student-exams',verifyJWT,getStudentExamDetails)
 module.exports = studentRouter;
 

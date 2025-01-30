@@ -193,9 +193,9 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Password and Confirm Password does not match")
 
     }
-   
+
     const student = await Student.findById(req.student?._id)
- 
+
     const isPasswordValid = await student.isPasswordCorrect(oldPassword)
     if (!isPasswordValid) {
         throw new ApiError(400, "Invalid Old Password")
@@ -237,8 +237,8 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 const updatStudentAvatar = asyncHandler(async (req, res) => {
 
 
-   
-    const avatarLocalPath =  req.files?.avatar[0]?.path
+
+    const avatarLocalPath = req.files?.avatar[0]?.path
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar File is required")
     }
@@ -261,9 +261,56 @@ const updatStudentAvatar = asyncHandler(async (req, res) => {
             new ApiResponse(200, student, "Avatar Updated Successfully")
         )
 })
+const getStudentExamDetails = asyncHandler(async (req, res) => {
+    
+    const student = await Student.aggregate([
+        {
+            $match: {
+                _id: req.student?._id
+            }
+        },
+        {
+            $lookup: {
+                from: "exam",
+                localField: "_id",
+                foreignField: "examStudentId",
+                as: "exam_details"
+            }
+        },
+        {
+            $addFields:{
+                examCount:{ $size:"$exam_details" },
+                averageMarks: { $avg: "$exam_details.examTotalMarks" }
+            },
+           
+        },
+        {
+            $project: {
+                name:1,
+                email:1,
+                exam_details:1,
+                examCount:1,
+                averageMarks:1,
+
+            }
+        }
+    ])
+    if(!student?.length)
+    {
+        throw new ApiError(404,"Exam Does not Exits")
+    }
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,student,"Student Exam Details Retrieved Successfully")
+    )
+
+
+
+})
 
 module.exports = {
     testAPI, registerStudent, loginStudent, logoutStudent, refreshAccessToken,
     changeCurrentPassword, getCurrentStudent, updateAccountDetails,
-    updatStudentAvatar
+    updatStudentAvatar, getStudentExamDetails
 }
