@@ -126,8 +126,8 @@ const logoutStudent = asyncHandler(async (req, res) => {
     // res.clearCookie("refreshToken")
     await Student.findByIdAndUpdate(req.student._id
         , {
-            $set: {
-                refreshToken: "",
+            $unset: {
+                refreshToken: 1,
             }
 
         },
