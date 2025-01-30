@@ -171,7 +171,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             maxAge: 30 * 24 * 60 * 60 * 1000,
             secure: true,
         }
-        const { accessToken, newrefreshToken } = await generateAccessAndRefreshTockens(user._id)
+        const { accessToken, newrefreshToken } = await generateAccessAndRefreshTockens(student._id)
         return res
             .status(200)
             .cookie('accessToken', accessToken, options)
