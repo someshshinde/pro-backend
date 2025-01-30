@@ -3,6 +3,8 @@ const { ApiError } = require('../utils/ApiError.js')
 const { Student } = require('../models/student.model.js')
 const { uploadOnCloudinary } = require('../utils/cloudinary.js')
 const { ApiResponse } = require('../utils/ApiResponse.js')
+const jwt = require('jsonwebtoken');
+
 
 const testAPI = asyncHandler(async (req, res) => {
     res.status(200).json({
@@ -93,7 +95,7 @@ const loginStudent = asyncHandler(async (req, res) => {
 
 
     //access refresh tocken
-    const { accessToken, refreshToken }= await generateAccessAndRefreshTockens(student._id)
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTockens(student._id)
 
     //send cookies
     const loginStudent = await Student.findById(student._id).select("-password,-refreshToken")
@@ -138,14 +140,50 @@ const logoutStudent = asyncHandler(async (req, res) => {
         secure: true,
     }
     return res
-    .status(200)
-    .clearCookie("accessToken",options)
-    .clearCookie("refreshToken",options)
-    .json(
-        new ApiResponse(200, {}, "Logout Sucessfully")
-    )
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(
+            new ApiResponse(200, {}, "Logout Sucessfully")
+        )
 
 
 })
 
-module.exports = { testAPI, registerStudent, loginStudent, logoutStudent }
+const refreshAccessToken = asyncHandler(async (req, res) => {
+
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+    if (!incomingRefreshToken) {
+        throw new ApiError(401, "Unauthorise Request")
+
+    }
+    try {
+        const decodeToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+        const student = await Student.findById(decodeToken?._id)
+        if (!student) {
+            throw new ApiError(401, "Invalid Refresh Token")
+        }
+        if (incomingRefreshToken !== student?.refreshToken) {
+            throw new ApiError(401, "Refresh Token is Expired or used")
+        }
+        const options = {
+            httpOnly: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            secure: true,
+        }
+        const { accessToken, newrefreshToken } = await generateAccessAndRefreshTockens(user._id)
+        return res
+            .status(200)
+            .cookie('accessToken', accessToken, options)
+            .cookie('refreshToken', newrefreshToken, options)
+            .json(new ApiResponse(200, { accessToken, refreshToken: newrefreshToken }, "Access Token Refresh Sucessfully"))
+
+    } catch (error) {
+        throw new ApiError(401, error?.message||"Invalid Refresh Token")
+    }
+
+
+
+})
+
+module.exports = { testAPI, registerStudent, loginStudent, logoutStudent, refreshAccessToken }
