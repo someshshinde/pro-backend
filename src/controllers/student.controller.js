@@ -179,11 +179,87 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             .json(new ApiResponse(200, { accessToken, refreshToken: newrefreshToken }, "Access Token Refresh Sucessfully"))
 
     } catch (error) {
-        throw new ApiError(401, error?.message||"Invalid Refresh Token")
+        throw new ApiError(401, error?.message || "Invalid Refresh Token")
     }
 
 
 
 })
 
-module.exports = { testAPI, registerStudent, loginStudent, logoutStudent, refreshAccessToken }
+const changeCurrentPassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword,confPassword } = req.body
+
+    if(!(newPassword===confPassword)){
+        throw new ApiError(400, "Password and Confirm Password does not match")
+        
+    }
+
+    const student = await Student.findById(req.student?._id)
+    const isPasswordCorrect = await student.isPasswordCorrect(oldPassword)
+    if (!isPasswordCorrect) throw new ApiError(400, "Invalid Old Password")
+    student.password = newPassword
+await student.save({validateBeforeSave:false})
+return res
+.status(200)
+.json(new ApiResponse(200, {}, "Password Changed Successfully"))
+
+})
+
+const getCurrentStudent=asyncHandler(async(req,res)=>{
+    return res
+    .status(200)
+    .json(200,req.student,"current student fetch sucessfully")
+})
+const updateAccountDetails=asyncHandler(async(req,res)=>{
+    const {name} = req.body
+    if(!name)
+    {
+        throw new ApiError(400, "Name is required")
+    }
+    const student = await Student.findByIdAndUpdate(req.student?._id,
+        {
+            $set:{
+                name:name
+            }
+        },{
+            new:true
+        }
+    ).select("-password")
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, student, "Account Details Updated Successfully"))
+    
+})
+
+const updatStudentAvatar=asyncHandler(async(req,res)=>{
+    const avatarLocalPath=req.file?.path
+    if(!avatarLocalPath)
+    {
+        throw new ApiError(400, "Avatar File is required")
+    }
+    const avatar=await uploadOnCloudinary(avatarLocalPath)
+    if(!avatar.url)
+    {
+        throw new ApiError(400, "Avatar Upload Failed")
+    }
+    const student = await Student.findByIdAndUpdate(req.student?._id,
+        {
+            $set:{
+                avatar:avatar.url
+            }
+        },{
+            new:true
+        }
+    ).select("-password")
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, student, "Avatar Updated Successfully")
+    )
+})
+
+module.exports = { testAPI, registerStudent, loginStudent, logoutStudent, refreshAccessToken,
+    changeCurrentPassword,getCurrentStudent,updateAccountDetails,
+    updatStudentAvatar
+}
