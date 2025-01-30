@@ -138,3 +138,19 @@ npm i multer
 <b>asyncHandler</b>
 <p>Simple middleware for handling exceptions inside of async express routes and passing them to your express error handlers.
 </p>
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npm run dev
+```
+
+
+## 🚀 About Me
+I'm a full stack developer...
+
+## 🛠 Skills
+Javascript, Node js, Express Js,MongoDB,mongoose
