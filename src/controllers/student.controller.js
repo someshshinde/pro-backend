@@ -4,6 +4,7 @@ const { Student } = require('../models/student.model.js')
 const { uploadOnCloudinary } = require('../utils/cloudinary.js')
 const { ApiResponse } = require('../utils/ApiResponse.js')
 const jwt = require('jsonwebtoken');
+const { default: mongoose } = require('mongoose')
 
 
 const testAPI = asyncHandler(async (req, res) => {
@@ -266,7 +267,7 @@ const getStudentExamDetails = asyncHandler(async (req, res) => {
     const student = await Student.aggregate([
         {
             $match: {
-                _id: req.student?._id
+                _id: new mongoose.Types.ObjectId(req.student?._id)
             }
         },
         {
