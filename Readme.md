@@ -132,7 +132,18 @@ npm i cloudinary
 ```bash
 npm i multer
 ```
+<b>winston</b>
+<p>A logger for just about everything</p>
 
+```bash
+npm i winston
+```
+<b>morgan</b>
+<p>HTTP request logger middleware for node.js</p>
+
+```bash
+npm i morgan
+```
  <h3>Error Handling</h3>
 
 <b>asyncHandler</b>
