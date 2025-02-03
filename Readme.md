@@ -132,6 +132,13 @@ npm i cloudinary
 ```bash
 npm i multer
 ```
+<b>Node Cache<b>
+<p>Node Cache is a simple caching library for Node.js.</p>
+
+```bash
+npm i node-cache
+```
+
 <b>winston</b>
 <p>A logger for just about everything</p>
 
@@ -144,6 +151,13 @@ npm i winston
 ```bash
 npm i morgan
 ```
+<b>helmet</b>
+<p>Help secure Express apps by setting HTTP response headers.</p>
+
+```bash
+npm i helmet
+```
+
  <h3>Error Handling</h3>
 
 <b>asyncHandler</b>

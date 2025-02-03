@@ -5,6 +5,9 @@ const { uploadOnCloudinary } = require('../utils/cloudinary.js')
 const { ApiResponse } = require('../utils/ApiResponse.js')
 const jwt = require('jsonwebtoken');
 const { default: mongoose } = require('mongoose')
+const NodeCache = require( "node-cache" );
+const { json } = require('express')
+const myCache = new NodeCache({stdTTL: 100});
 
 
 const testAPI = asyncHandler(async (req, res) => {
@@ -228,6 +231,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         new: true
     }
     ).select("-password")
+    myCache.del('stdentExamDetails')
 
     return res
         .status(200)
@@ -263,39 +267,49 @@ const updatStudentAvatar = asyncHandler(async (req, res) => {
         )
 })
 const getStudentExamDetails = asyncHandler(async (req, res) => {
-    
-    const student = await Student.aggregate([
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(req.student?._id)
-            }
-        },
-        {
-            $lookup: {
-                from: "exam",
-                localField: "_id",
-                foreignField: "examStudentId",
-                as: "exam_details"
-            }
-        },
-        {
-            $addFields:{
-                examCount:{ $size:"$exam_details" },
-                averageMarks: { $avg: "$exam_details.examTotalMarks" }
-            },
-           
-        },
-        {
-            $project: {
-                name:1,
-                email:1,
-                exam_details:1,
-                examCount:1,
-                averageMarks:1,
+    let student
 
+    if(myCache.has('stdentExamDetails'))
+    {
+        student=JSON.parse(myCache.get('stdentExamDetails'))
+    }else{
+        student = await Student.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(req.student?._id)
+                }
+            },
+            {
+                $lookup: {
+                    from: "exam",
+                    localField: "_id",
+                    foreignField: "examStudentId",
+                    as: "exam_details"
+                }
+            },
+            {
+                $addFields:{
+                    examCount:{ $size:"$exam_details" },
+                    averageMarks: { $avg: "$exam_details.examTotalMarks" }
+                },
+               
+            },
+            {
+                $project: {
+                    name:1,
+                    email:1,
+                    exam_details:1,
+                    examCount:1,
+                    averageMarks:1,
+    
+                }
             }
-        }
-    ])
+        ])
+        myCache.set('stdentExamDetails',JSON.stringify(student))
+    }
+   
+   
+
     if(!student?.length)
     {
         throw new ApiError(404,"Exam Does not Exits")

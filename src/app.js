@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 
 const logger =require('../src/utils/logger.js')
 const morgan=require('morgan')
+const helmet =require('helmet')
 
 const app = express()
 
@@ -37,6 +38,7 @@ app.use(
   })
 );
 
+app.use(helmet());
 app.use(express.static("public"))//To serve static files such as images, CSS files, and JavaScript files,
 
 app.use(cookieParser())//set up cookie-parser middleware from user browser
